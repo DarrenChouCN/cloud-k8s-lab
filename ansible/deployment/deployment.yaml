@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yolo-waste-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yolo-waste-api
+  template:
+    metadata:
+      labels:
+        app: yolo-waste-api
+    spec:
+      imagePullSecrets:
+        - name: acr-auth
+      containers:
+        - name: yolo-waste-api
+          image: acrwastedetectionsea01.azurecr.io/yolo-waste-api:v2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: MODEL_PATH
+              value: "best_model.pt"
+            - name: MODEL_CONFIDENCE
+              value: "0.25"
+            - name: MAX_INFERENCE_CONCURRENCY
+              value: "2"
+            - name: SERIALIZE_MODEL_PREDICT
+              value: "false"
+            - name: WARMUP_ON_STARTUP
+              value: "true"
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"

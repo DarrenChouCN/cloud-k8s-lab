@@ -36,8 +36,7 @@ chmod 644 ~/.ssh/id_rsa.pub
 # get VM's public IP
 az vm show -d -g rg-wastedetection-dev-aue-01 -n vm-wastedetection-master-aue-01 --query publicIps -o tsv
 # login VM
-# azureuser@20.212.8.183 -i ~/.ssh/id_rsa
-ssh azureuser@<public-ip> -i ~/.ssh/id_rsa
+ssh azureuser@<public-ip>
 ```
 
 ```bash
@@ -50,4 +49,14 @@ ansible-playbook playbooks/azure_infra.yml
 ```bash
 cd ansible
 ANSIBLE_ROLES_PATH=./roles ansible-playbook -i inventory/localhost.yml playbooks/k8s_cluster.yml
+```
+
+```bash
+scp ansible/deployment/deployment.yaml azureuser@20.212.8.183:~/
+scp ansible/deployment/service.yaml azureuser@20.212.8.183:~/
+
+kubectl scale deployment yolo-waste-api --replicas=1
+kubectl scale deployment yolo-waste-api --replicas=2
+kubectl scale deployment yolo-waste-api --replicas=4
+kubectl scale deployment yolo-waste-api --replicas=8
 ```

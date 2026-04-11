@@ -1,8 +1,4 @@
 ```bash
-az login --use-device-code
-```
-
-```bash
 # Install Ansible
 mkdir -p ~/venvs
 # .venv path of Ansible for Azure
@@ -47,7 +43,7 @@ ssh azureuser@<public-ip> -i ~/.ssh/id_rsa
 ```bash
 source ~/venvs/ansible-azure/bin/activate
 export AZURE_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
-cd /mnt/g/YOLO-Waste-Detection/ansible
+cd ansible
 ansible-playbook playbooks/azure_infra.yml
 ```
 

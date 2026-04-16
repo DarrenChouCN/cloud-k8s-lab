@@ -8,8 +8,8 @@ azure_nsg: nsg-wastedetection-k8s-aue-01
 vm_admin_username: azureuser
 ssh_public_key_path: "{{ lookup('env', 'HOME') + '/.ssh/id_rsa.pub' }}"
 
-default_vm_size: Standard_B2as_v2
-os_managed_disk_type: StandardSSD_LRS
+default_vm_size: Standard_B2als_v2 # 2 cpus 4GB RAM
+os_managed_disk_type: Standard_LRS
 os_disk_size_gb: 30
 
 azure_acr_name: acrwastedetectionsea01
@@ -64,6 +64,7 @@ containerd_config_path: /etc/containerd/config.toml
 pod_network_cidr: 192.168.0.0/16
 calico_version: v3.31.4
 calico_manifest_url: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/calico.yaml"
+calico_manifest_local: /root/calico.yaml
 
 kube_packages:
   - kubelet

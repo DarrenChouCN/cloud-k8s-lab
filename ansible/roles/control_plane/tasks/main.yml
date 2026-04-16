@@ -31,20 +31,35 @@
     mode: '0600'
     remote_src: true
 
-- name: Check whether Calico is already installed
-  ansible.builtin.command: kubectl get daemonset calico-node -n kube-system
-  environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
-  register: calico_status
-  failed_when: false
-  changed_when: false
+- name: Download Calico manifest
+  ansible.builtin.get_url:
+    url: "{{ calico_manifest_url }}"
+    dest: "{{ calico_manifest_local }}"
+    mode: "0644"
 
-- name: Install Calico network plugin
-  ansible.builtin.command: kubectl apply -f {{ calico_manifest_url }}
+- name: Set Calico default pool IPIP to Never for Azure
+  ansible.builtin.replace:
+    path: "{{ calico_manifest_local }}"
+    regexp: '(- name: CALICO_IPV4POOL_IPIP\s+value: )"Always"'
+    replace: '\1"Never"'
+
+- name: Set Calico default pool VXLAN to Always for this Azure lab
+  ansible.builtin.replace:
+    path: "{{ calico_manifest_local }}"
+    regexp: '(- name: CALICO_IPV4POOL_VXLAN\s+value: )"Never"'
+    replace: '\1"Always"'
+
+- name: Apply Calico manifest
+  ansible.builtin.command: kubectl apply -f {{ calico_manifest_local }}
   environment:
     KUBECONFIG: /etc/kubernetes/admin.conf
-  when: calico_status.rc != 0
   changed_when: true
+
+- name: Wait for calico-node daemonset to be ready
+  ansible.builtin.command: kubectl -n kube-system rollout status daemonset/calico-node --timeout=180s
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  changed_when: false
 
 - name: Generate worker join command
   ansible.builtin.command: kubeadm token create --print-join-command

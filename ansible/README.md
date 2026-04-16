@@ -39,6 +39,10 @@ az vm show -d -g rg-wastedetection-dev-aue-01 -n vm-wastedetection-master-aue-01
 ssh azureuser@<public-ip>
 ```
 
+# master: ssh azureuser@4.193.84.73
+# worker1: ssh azureuser@4.193.190.72
+# worker2: ssh azureuser@4.193.212.161
+
 ```bash
 source ~/venvs/ansible-azure/bin/activate
 export AZURE_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
@@ -52,8 +56,8 @@ ANSIBLE_ROLES_PATH=./roles ansible-playbook -i inventory/localhost.yml playbooks
 ```
 
 ```bash
-scp ansible/deployment/deployment.yaml azureuser@20.212.8.183:~/
-scp ansible/deployment/service.yaml azureuser@20.212.8.183:~/
+scp ansible/deployment/deployment.yaml azureuser@104.215.191.120:~/
+scp ansible/deployment/service.yaml azureuser@104.215.191.120:~/
 
 kubectl scale deployment yolo-waste-api --replicas=1
 kubectl scale deployment yolo-waste-api --replicas=2

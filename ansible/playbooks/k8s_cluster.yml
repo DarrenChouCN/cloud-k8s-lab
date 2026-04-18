@@ -1,4 +1,5 @@
 ---
+# used for discovering the Azure VM network information before cluster deployment
 - name: Discover Azure VM addresses and build in-memory inventory
   hosts: localhost
   gather_facts: false
@@ -7,6 +8,7 @@
   vars:
     ssh_private_key_path: "{{ ansible_ssh_private_key_file | default(lookup('env', 'HOME') + '/.ssh/id_rsa') }}"
   tasks:
+    # used for making sure the expected cluster nodes are defined first
     - name: Validate node definitions exist
       ansible.builtin.assert:
         that:
@@ -14,6 +16,7 @@
           - k8s_nodes | length == 3
         fail_msg: "k8s_nodes must contain master, worker1, and worker2 definitions."
 
+    # used for collecting the public IP of each VM from Azure
     - name: Collect public IP details for each node
       azure.azcollection.azure_rm_publicipaddress_info:
         auth_source: cli
@@ -23,6 +26,7 @@
       loop: "{{ k8s_nodes }}"
       register: public_ip_lookup
 
+    # used for collecting the NIC details so the private IP of each VM can also be retrieved
     - name: Collect NIC details for each node
       azure.azcollection.azure_rm_networkinterface_info:
         auth_source: cli
@@ -32,6 +36,7 @@
       loop: "{{ k8s_nodes }}"
       register: nic_lookup
 
+    # used for combining the Azure lookup results into one normalized node list
     - name: Build normalized node inventory structure
       ansible.builtin.set_fact:
         discovered_nodes: >-
@@ -45,6 +50,7 @@
           }}
       loop: "{{ k8s_nodes | zip(public_ip_lookup.results, nic_lookup.results) | list }}"
 
+    # used for checking that every node has both public and private IPs before Ansible connects to it
     - name: Ensure every node has both public and private IPs
       ansible.builtin.assert:
         that:
@@ -55,6 +61,8 @@
         fail_msg: "Missing public or private IP for {{ item.name }}."
       loop: "{{ discovered_nodes }}"
 
+    # used for adding the discovered VMs into Ansible dynamic inventory
+    # this is the key step that lets Ansible connect to the cluster nodes
     - name: Add hosts to dynamic inventory
       ansible.builtin.add_host:
         name: "{{ item.name }}"
@@ -68,18 +76,21 @@
         node_role: "{{ item.role }}"
       loop: "{{ discovered_nodes }}"
 
+    # used for preparing the local SSH directory for node access
     - name: Ensure local .ssh directory exists
       ansible.builtin.file:
         path: "{{ lookup('env', 'HOME') + '/.ssh' }}"
         state: directory
         mode: '0700'
 
+    # used for preparing the local known_hosts file
     - name: Ensure local known_hosts file exists
       ansible.builtin.file:
         path: "{{ lookup('env', 'HOME') + '/.ssh/known_hosts' }}"
         state: touch
         mode: '0644'
 
+    # used for removing old SSH fingerprints in case the VMs were recreated
     - name: Remove stale SSH host keys for cluster nodes
       ansible.builtin.command:
         cmd: "ssh-keygen -R {{ hostvars[item].ansible_host }}"
@@ -87,6 +98,7 @@
       changed_when: false
       failed_when: false
 
+    # used for adding the current SSH fingerprints so Ansible can connect safely
     - name: Add current SSH host keys for cluster nodes
       ansible.builtin.known_hosts:
         path: "{{ lookup('env', 'HOME') + '/.ssh/known_hosts' }}"
@@ -94,17 +106,21 @@
         key: "{{ lookup('pipe', 'ssh-keyscan -H ' ~ hostvars[item].ansible_host ~ ' 2>/dev/null') }}"
       loop: "{{ groups['k8s'] }}"
 
+    # used for saving the control plane private IP for later cluster setup
     - name: Publish control plane private IP for later plays
       ansible.builtin.set_fact:
         control_plane_private_ip: >-
           {{ discovered_nodes | selectattr('role', 'equalto', 'master') | map(attribute='private_ip') | first }}
 
+    # used for storing shared cluster metadata for the next deployment stages
     - name: Add localhost with cluster metadata
       ansible.builtin.add_host:
         name: cluster_metadata
         groups: cluster_metadata
         control_plane_private_ip: "{{ control_plane_private_ip }}"
 
+# from this point, Ansible uses a standard role-based template to deploy the Kubernetes cluster
+# the deployment flow is fixed, so the main focus here is the dynamic inventory step above
 - name: Bootstrap all Kubernetes nodes
   hosts: k8s
   become: true

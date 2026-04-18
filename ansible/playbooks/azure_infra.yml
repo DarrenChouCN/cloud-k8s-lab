@@ -7,6 +7,7 @@
     - ../inventory/group_vars/all.yml
 
   tasks:
+    # used for creating the resource group that contains all Azure resources
     - name: Ensure resource group exists
       azure.azcollection.azure_rm_resourcegroup:
         auth_source: cli
@@ -15,6 +16,7 @@
         location: "{{ azure_location }}"
         tags: "{{ common_tags }}"
 
+    # used for creating Azure Container Registry to store container images
     - name: Ensure Azure Container Registry exists
       azure.azcollection.azure_rm_containerregistry:
         auth_source: cli
@@ -26,6 +28,7 @@
         admin_user_enabled: "{{ azure_acr_admin_user_enabled }}"
         tags: "{{ common_tags }}"
 
+    # used for creating the virtual network for the Kubernetes cluster
     - name: Ensure virtual network exists
       azure.azcollection.azure_rm_virtualnetwork:
         auth_source: cli
@@ -36,6 +39,7 @@
         address_prefixes_cidr: "{{ vnet_address_space }}"
         tags: "{{ common_tags }}"
 
+    # used for creating the subnet inside the virtual network
     - name: Ensure subnet exists
       azure.azcollection.azure_rm_subnet:
         auth_source: cli
@@ -45,6 +49,7 @@
         name: "{{ azure_subnet }}"
         address_prefix_cidr: "{{ subnet_prefix }}"
 
+    # used for defining network security rules such as SSH, Kubernetes API, and NodePort access
     - name: Ensure network security group exists
       azure.azcollection.azure_rm_securitygroup:
         auth_source: cli
@@ -78,6 +83,7 @@
             priority: 120
             direction: Inbound
 
+    # used for assigning public IP addresses so the nodes can be accessed from the Internet
     - name: Ensure public IPs exist
       azure.azcollection.azure_rm_publicipaddress:
         auth_source: cli
@@ -92,6 +98,7 @@
       loop_control:
         label: "{{ item.public_ip_name }}"
 
+    # used for creating network interfaces and attaching network settings to each VM
     - name: Ensure NICs exist
       azure.azcollection.azure_rm_networkinterface:
         auth_source: cli
@@ -111,6 +118,7 @@
       loop_control:
         label: "{{ item.nic_name }}"
 
+    # used for creating the virtual machines that act as Kubernetes nodes
     - name: Ensure VMs exist
       azure.azcollection.azure_rm_virtualmachine:
         auth_source: cli

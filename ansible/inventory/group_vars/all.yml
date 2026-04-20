@@ -8,7 +8,9 @@ azure_nsg: nsg-wastedetection-k8s-aue-01
 vm_admin_username: azureuser
 ssh_public_key_path: "{{ lookup('env', 'HOME') + '/.ssh/id_rsa.pub' }}"
 
-default_vm_size: Standard_B2als_v2 # 2 cpus 4GB RAM
+# default_vm_size: Standard_B2als_v2 # 2 cpus 4GB RAM
+master_node_vm_size: Standard_D4als_v7 # 4 cpus 8GB RAM
+worker_node_vm_size: Standard_D4als_v6 # 4 cpus 8GB RAM
 os_managed_disk_type: Standard_LRS
 os_disk_size_gb: 30
 

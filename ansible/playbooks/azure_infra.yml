@@ -126,7 +126,7 @@
         resource_group: "{{ azure_rg }}"
         name: "{{ item.vm_name }}"
         location: "{{ azure_location }}"
-        vm_size: "{{ default_vm_size }}"
+        vm_size: "{{ master_node_vm_size if item.role == 'master' else worker_node_vm_size }}"
         admin_username: "{{ vm_admin_username }}"
         ssh_password_enabled: false
         ssh_public_keys:

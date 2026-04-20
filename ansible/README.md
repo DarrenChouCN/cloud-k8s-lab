@@ -105,8 +105,12 @@ kubectl get secret acr-auth
 ## 9. Deploy the Application to Kubernetes
 ```bash
 # Copy the Kubernetes YAML files to the master node:
+# 4.193.254.153
 scp ansible/deployment/deployment.yaml azureuser@<master-node-ip>:~/
 scp ansible/deployment/service.yaml azureuser@<master-node-ip>:~/
+
+scp ansible/deployment/deployment.yaml azureuser@4.193.254.153:~/
+scp ansible/deployment/service.yaml azureuser@4.193.254.153:~/
 
 # Then apply them on the master node
 kubectl apply -f deployment.yaml

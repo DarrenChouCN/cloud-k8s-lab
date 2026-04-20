@@ -33,7 +33,7 @@ spec:
               value: "true"
           resources:
             requests:
-              cpu: "250m"
+              cpu: "1"
               memory: "512Mi"
             limits:
               cpu: "1"

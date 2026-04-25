@@ -36,4 +36,7 @@ terraform apply
 az aks get-credentials \
   --resource-group <resource-group> \
   --name <aks-name>
+
+# if kubectl token is expired, add:
+# --overwrite-existing
 ```

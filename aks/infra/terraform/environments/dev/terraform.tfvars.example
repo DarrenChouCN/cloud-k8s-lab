@@ -1,0 +1,13 @@
+project_name   = "project_name"
+environment    = "dev"
+location       = "australiasoutheast"
+location_short = "ause"
+owner          = "owner"
+
+dns_zone_name = "aks.dnszonename.com"
+
+node_vm_size    = "Standard_B2ats_v2"
+node_count      = 1
+os_disk_size_gb = 64
+
+kubernetes_version = null

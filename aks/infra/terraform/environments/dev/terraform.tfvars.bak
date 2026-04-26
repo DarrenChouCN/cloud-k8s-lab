@@ -11,3 +11,5 @@ node_count      = 1
 os_disk_size_gb = 64
 
 kubernetes_version = null
+
+acr_name = "acr_name"

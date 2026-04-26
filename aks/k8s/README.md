@@ -21,3 +21,10 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 helm version
 ```
+
+## 3. Install components (Optionally, could be replaced by Argo CD)
+```bash
+cd aks/scripts
+chmod +x ./bootstrap-aks-addons.sh
+bash ./bootstrap-aks-addons.sh
+```

@@ -53,3 +53,8 @@ variable "kubernetes_version" {
   type        = string
   default     = null
 }
+
+variable "acr_name" {
+  description = "Azure Container Registry name. Must be globally unique and contain only lowercase letters and numbers."
+  type        = string
+}

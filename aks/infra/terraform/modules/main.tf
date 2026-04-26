@@ -12,6 +12,16 @@ resource "azurerm_dns_zone" "aks" {
   tags = local.tags
 }
 
+resource "azurerm_container_registry" "main" {
+  name                = var.acr_name
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  sku                 = "Standard"
+  admin_enabled       = false
+
+  tags = local.tags
+}
+
 resource "azurerm_user_assigned_identity" "external_dns" {
   name                = local.external_dns_identity_name
   location            = azurerm_resource_group.main.location
@@ -24,6 +34,12 @@ resource "azurerm_role_assignment" "external_dns_zone_contributor" {
   scope                = azurerm_dns_zone.aks.id
   role_definition_name = "DNS Zone Contributor"
   principal_id         = azurerm_user_assigned_identity.external_dns.principal_id
+}
+
+resource "azurerm_role_assignment" "aks_acr_pull" {
+  scope                = azurerm_container_registry.main.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_kubernetes_cluster.main.kubelet_identity[0].object_id
 }
 
 resource "azurerm_kubernetes_cluster" "main" {

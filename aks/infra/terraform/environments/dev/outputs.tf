@@ -25,3 +25,11 @@ output "external_dns_identity_name" {
 output "aks_get_credentials_command" {
   value = module.aks_infra.aks_get_credentials_command
 }
+
+output "acr_name" {
+  value = module.aks_infra.acr_name
+}
+
+output "acr_login_server" {
+  value = module.aks_infra.acr_login_server
+}

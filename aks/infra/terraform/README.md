@@ -22,7 +22,7 @@ terraform -install-autocomplete
 ```bash
 cd aks/infra/terraform/environments/dev
 
-source ./set-env.sh
+export TF_VAR_subscription_id=$(az account show --query id -o tsv)
 
 terraform init
 terraform fmt -recursive

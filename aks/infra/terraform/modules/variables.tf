@@ -48,3 +48,7 @@ variable "external_dns_service_account_name" {
   type    = string
   default = "external-dns"
 }
+
+variable "acr_name" {
+  type = string
+}

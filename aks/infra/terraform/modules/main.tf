@@ -36,6 +36,12 @@ resource "azurerm_role_assignment" "external_dns_zone_contributor" {
   principal_id         = azurerm_user_assigned_identity.external_dns.principal_id
 }
 
+resource "azurerm_role_assignment" "external_dns_rg_reader" {
+  scope                = azurerm_resource_group.main.id
+  role_definition_name = "Reader"
+  principal_id         = azurerm_user_assigned_identity.external_dns.principal_id
+}
+
 resource "azurerm_role_assignment" "aks_acr_pull" {
   scope                = azurerm_container_registry.main.id
   role_definition_name = "AcrPull"
@@ -50,6 +56,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   kubernetes_version  = var.kubernetes_version
   sku_tier            = "Free"
 
+  # enable workload identity
   oidc_issuer_enabled       = true
   workload_identity_enabled = true
 

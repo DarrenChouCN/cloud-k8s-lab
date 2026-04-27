@@ -1,0 +1,28 @@
+fullnameOverride: external-dns
+
+provider:
+  name: azure
+
+sources:
+  - ingress
+
+domainFilters:
+  - aks.darrencloudlab.com
+
+policy: upsert-only
+
+registry: txt
+txtOwnerId: aks-cloud-k8s-lab-dev-ause-01
+
+podLabels:
+  azure.workload.identity/use: "true"
+
+extraVolumes:
+  - name: azure-config-file
+    secret:
+      secretName: external-dns-azure
+
+extraVolumeMounts:
+  - name: azure-config-file
+    mountPath: /etc/kubernetes
+    readOnly: true

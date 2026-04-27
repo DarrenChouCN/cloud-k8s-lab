@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>sapp1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: #111827;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      width: 520px;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #38bdf8;
+    }
+
+    .row {
+      margin: 12px 0;
+      font-size: 16px;
+    }
+
+    .label {
+      color: #94a3b8;
+    }
+
+    .value {
+      color: #f8fafc;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>sapp1 is running</h1>
+
+    <div class="row">
+      <span class="label">Hostname:</span>
+      <span class="value" id="hostname"></span>
+    </div>
+
+    <div class="row">
+      <span class="label">Path:</span>
+      <span class="value" id="path"></span>
+    </div>
+
+    <div class="row">
+      <span class="label">Full URL:</span>
+      <span class="value" id="url"></span>
+    </div>
+
+    <div class="row">
+      <span class="label">Protocol:</span>
+      <span class="value" id="protocol"></span>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("hostname").textContent = window.location.hostname;
+    document.getElementById("path").textContent = window.location.pathname;
+    document.getElementById("url").textContent = window.location.href;
+    document.getElementById("protocol").textContent = window.location.protocol;
+  </script>
+</body>
+</html>

@@ -22,9 +22,13 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 helm version
 ```
 
-## 3. Install components (Optionally, could be replaced by Argo CD)
+## 3. Deploy Nginx app
 ```bash
-cd aks/scripts
-chmod +x ./bootstrap-aks-addons.sh
-bash ./bootstrap-aks-addons.sh
+kubectl apply -f aks/k8s/sapp1/
+kubectl get pods
+kubectl get svc
+
+kubectl apply -f aks/k8s/sapp1/ingress.yaml
+curl -H "Host: sapp1.darrencloudlab.com" http://<INGRESS_PUBLIC_IP>
+# curl -H "Host: sapp1.darrencloudlab.com" http://20.70.70.50
 ```

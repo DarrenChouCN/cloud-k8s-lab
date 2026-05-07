@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sapp2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sapp2
+  template:
+    metadata:
+      labels:
+        app: sapp2
+    spec:
+      containers:
+        - name: sapp2
+          image: acrcloudk8slabdevause01.azurecr.io/sapp2:v1
+          ports:
+            - containerPort: 80

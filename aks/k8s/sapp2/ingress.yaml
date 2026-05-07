@@ -1,23 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: sapp1-ingress
+  name: sapp2-ingress
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
+
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - sapp1.aks.darrencloudlab.com
-      secretName: sapp1-tls
+        - sapp2.aks.darrencloudlab.com
+      secretName: sapp2-tls
   rules:
-    - host: sapp1.aks.darrencloudlab.com
+    - host: sapp2.aks.darrencloudlab.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: sapp1-service
+                name: sapp2-service
                 port:
                   number: 80

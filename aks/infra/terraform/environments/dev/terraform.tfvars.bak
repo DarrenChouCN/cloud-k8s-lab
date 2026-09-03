@@ -1,4 +1,4 @@
-project_name   = "project_name"
+project_name   = "cloud-k8s-lab"
 environment    = "dev"
 location       = "australiasoutheast"
 location_short = "ause"
@@ -6,10 +6,10 @@ owner          = "owner"
 
 dns_zone_name = "aks.dnszonename.com"
 
-node_vm_size    = "Standard_B2ats_v2"
+node_vm_size    = "Standard_D4als_v6"
 node_count      = 1
 os_disk_size_gb = 64
 
 kubernetes_version = null
 
-acr_name = "acr_name"
+acr_name = "acrcloudk8slabdevause01"

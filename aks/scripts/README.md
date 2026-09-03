@@ -20,9 +20,13 @@ scripts/
 
 ```bash
 # 00. Prepare Terraform remote backend.
+chmod +x ./scripts/00-bootstrap-tf-backend.sh
 ./scripts/00-bootstrap-tf-backend.sh
 
 # 01. Initialize and apply Azure infrastructure.
+export TF_VAR_subscription_id=$(az account show --query id -o tsv)
+echo $TF_VAR_subscription_id
+
 terraform -chdir=infra/terraform/environments/dev init
 terraform -chdir=infra/terraform/environments/dev apply
 

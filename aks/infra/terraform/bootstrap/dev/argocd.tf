@@ -10,3 +10,18 @@ resource "helm_release" "argocd" {
   wait    = true
   timeout = 600
 }
+
+resource "helm_release" "argocd_bootstrap" {
+  name       = "argocd-bootstrap"
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argocd-apps"
+  namespace  = "argocd"
+
+  values = [
+    file("${path.module}/argocd-apps-values.yaml")
+  ]
+
+  depends_on = [
+    helm_release.argocd
+  ]
+}

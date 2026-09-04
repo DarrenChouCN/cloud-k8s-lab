@@ -1,0 +1,35 @@
+applicationsets:
+  platform:
+    namespace: argocd
+
+    goTemplate: true
+    goTemplateOptions:
+      - missingkey=error
+
+    generators:
+      - git:
+          repoURL: https://github.com/DarrenChouCN/cloud-k8s-lab.git
+          revision: main
+          directories:
+            - path: aks/gitops/platform/*
+
+    template:
+      metadata:
+        name: '{{ .path.basename }}'
+
+      spec:
+        project: default
+
+        source:
+          repoURL: https://github.com/DarrenChouCN/cloud-k8s-lab.git
+          targetRevision: main
+          path: '{{ .path.path }}'
+
+        destination:
+          server: https://kubernetes.default.svc
+          namespace: default
+
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true

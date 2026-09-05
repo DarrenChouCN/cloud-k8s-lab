@@ -20,20 +20,6 @@ applicationsets:
       spec:
         project: default
 
-        sources:
-          # Official component Helm chart
-          - repoURL: '{{ .chart.repoURL }}'
-            chart: '{{ .chart.name }}'
-            targetRevision: '{{ .chart.version }}'
-            helm:
-              valueFiles:
-                - '$values/{{ .valuesFile }}'
-
-          # GitOps repo containing our Helm values
-          - repoURL: https://github.com/DarrenChouCN/cloud-k8s-lab.git
-            targetRevision: main
-            ref: values
-
         destination:
           server: https://kubernetes.default.svc
           namespace: '{{ .namespace }}'
@@ -44,3 +30,26 @@ applicationsets:
             selfHeal: true
           syncOptions:
             - CreateNamespace=true
+
+    templatePatch: |
+      spec:
+        sources:
+          # Official component Helm chart
+          - repoURL: '{{ .chart.repoURL }}'
+            chart: '{{ .chart.name }}'
+            targetRevision: '{{ .chart.version }}'
+            helm:
+              valueFiles:
+                - '$values/{{ .valuesFile }}'
+
+          # Git repository containing Helm values
+          - repoURL: https://github.com/DarrenChouCN/cloud-k8s-lab.git
+            targetRevision: main
+            ref: values
+
+      {{ if ne (dig "manifestsPath" "" .) "" }}
+          # Optional additional Kubernetes manifests
+          - repoURL: https://github.com/DarrenChouCN/cloud-k8s-lab.git
+            targetRevision: main
+            path: '{{ dig "manifestsPath" "" . }}'
+      {{ end }}

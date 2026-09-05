@@ -1,0 +1,10 @@
+name: cert-manager
+namespace: cert-manager
+
+chart:
+  repoURL: https://charts.jetstack.io
+  name: cert-manager
+  version: v1.20.2
+
+valuesFile: aks/gitops/platform/cert-manager/values.yaml
+manifestsPath: aks/gitops/platform/cert-manager/manifests

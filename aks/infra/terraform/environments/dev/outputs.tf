@@ -33,3 +33,21 @@ output "acr_name" {
 output "acr_login_server" {
   value = module.aks_infra.acr_login_server
 }
+
+output "external_dns_gitops_config" {
+  description = "Configuration consumed by the ExternalDNS GitOps deployment."
+
+  value = {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+
+    subscription_id = data.azurerm_client_config.current.subscription_id
+
+    dns_resource_group_name = module.aks_infra.resource_group_name
+
+    client_id = module.aks_infra.external_dns_client_id
+
+    oidc_issuer_url = module.aks_infra.oidc_issuer_url
+
+    service_account_subject = module.aks_infra.external_dns_service_account_subject
+  }
+}

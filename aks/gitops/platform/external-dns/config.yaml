@@ -1,0 +1,10 @@
+name: external-dns
+namespace: external-dns
+
+chart:
+  repoURL: https://kubernetes-sigs.github.io/external-dns/
+  name: external-dns
+  version: 1.20.0
+
+valuesFile: aks/gitops/platform/external-dns/values.yaml
+manifestsPath: aks/gitops/platform/external-dns/manifests

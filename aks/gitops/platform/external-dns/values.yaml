@@ -1,0 +1,37 @@
+fullnameOverride: external-dns
+
+provider:
+  name: azure
+
+sources:
+  - ingress
+
+domainFilters:
+  - aks.darrencloudlab.com
+
+policy: upsert-only
+
+registry: txt
+txtOwnerId: aks-cloud-k8s-lab-dev-ause-01
+
+serviceAccount:
+  create: true
+  name: external-dns
+  labels:
+    azure.workload.identity/use: "true"
+  annotations:
+    # Come from Terraform output: client-id -> Azure Managed Identity
+    azure.workload.identity/client-id: "49069c09-c950-48a0-9863-151ac07d661c"
+
+podLabels:
+  azure.workload.identity/use: "true"
+
+extraVolumes:
+  - name: azure-config-file
+    secret:
+      secretName: external-dns-azure
+
+extraVolumeMounts:
+  - name: azure-config-file
+    mountPath: /etc/kubernetes
+    readOnly: true

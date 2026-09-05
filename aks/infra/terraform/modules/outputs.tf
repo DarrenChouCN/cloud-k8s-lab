@@ -47,3 +47,7 @@ output "kube_config" {
   value     = azurerm_kubernetes_cluster.main.kube_config
   sensitive = true
 }
+
+output "external_dns_service_account_subject" {
+  value = azurerm_federated_identity_credential.external_dns.subject
+}

@@ -10,26 +10,37 @@ applicationsets:
       - git:
           repoURL: https://github.com/DarrenChouCN/cloud-k8s-lab.git
           revision: main
-          directories:
-            - path: aks/gitops/platform/*
+          files:
+            - path: aks/gitops/platform/*/config.yaml
 
     template:
       metadata:
-        name: '{{ .path.basename }}'
+        name: '{{ .name }}'
 
       spec:
         project: default
 
-        source:
-          repoURL: https://github.com/DarrenChouCN/cloud-k8s-lab.git
-          targetRevision: main
-          path: '{{ .path.path }}'
+        sources:
+          # Official component Helm chart
+          - repoURL: '{{ .chart.repoURL }}'
+            chart: '{{ .chart.name }}'
+            targetRevision: '{{ .chart.version }}'
+            helm:
+              valueFiles:
+                - '$values/{{ .valuesFile }}'
+
+          # GitOps repo containing our Helm values
+          - repoURL: https://github.com/DarrenChouCN/cloud-k8s-lab.git
+            targetRevision: main
+            ref: values
 
         destination:
           server: https://kubernetes.default.svc
-          namespace: default
+          namespace: '{{ .namespace }}'
 
         syncPolicy:
           automated:
             prune: true
             selfHeal: true
+          syncOptions:
+            - CreateNamespace=true

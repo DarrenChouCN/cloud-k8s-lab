@@ -1,17 +1,19 @@
 ```bash
-cd app/sapp1
+cd aks
 
-docker build -t sapp1:v1 .
+ACR_NAME=$(terraform -chdir=infra/terraform/environments/dev output -raw acr_name)
+ACR_SERVER=$(terraform -chdir=infra/terraform/environments/dev output -raw acr_login_server)
+echo $ACR_NAME
+echo $ACR_SERVER
 
-docker tag sapp1:v1 <your-acr>.azurecr.io/sapp1:v1
-# docker tag sapp2:v1 acrcloudk8slabdevause01.azurecr.io/sapp2:v1
+az acr login --name "$ACR_NAME"
 
-az acr login --name <your-acr-name>
-# az acr login --name acrcloudk8slabdevause01
+docker build -t "$ACR_SERVER/sapp1:v1" app/sapp1
+docker build -t "$ACR_SERVER/sapp2:v1" app/sapp2
 
-docker push <your-acr>.azurecr.io/sapp1:v1
-# docker push acrcloudk8slabdevause01.azurecr.io/sapp2:v1
+docker push "$ACR_SERVER/sapp1:v1"
+docker push "$ACR_SERVER/sapp2:v1"
 
-docker rmi <local-image>
-# docker rmi sapp1:v1
+az acr repository show-tags --name "$ACR_NAME" --repository sapp1 -o table
+az acr repository show-tags --name "$ACR_NAME" --repository sapp2 -o table
 ```

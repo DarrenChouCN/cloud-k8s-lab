@@ -339,6 +339,36 @@ The complete request path is:
 Public DNS → Azure Load Balancer → ingress-nginx → ClusterIP Service → application Pod
 ```
 
+### 10. Monitoring Demo — Prometheus & Grafana
+
+Check monitoring status:
+
+```bash
+kubectl get application kube-prometheus-stack -n argocd
+kubectl get pods,pvc -n monitoring
+```
+
+Open Grafana (keep this terminal running):
+
+```bash
+kubectl port-forward -n monitoring svc/kube-prometheus-stack-grafana 3000:80
+```
+
+In another terminal, retrieve the password:
+
+```bash
+kubectl get secret -n monitoring kube-prometheus-stack-grafana -o jsonpath='{.data.admin-password}' | base64 --decode; echo
+```
+
+Visit http://localhost:3000 and sign in as `admin` using the retrieved password.
+
+Under **Dashboards**, open:
+
+- **Node Exporter / Nodes** — node CPU, memory, disk, and network.
+- **Kubernetes / Compute Resources / Pod** — select namespace `sapp1` or `sapp2` and the corresponding pod.
+
+Prometheus continuously collects metrics inside AKS and stores them on a persistent volume. Port-forwarding only provides temporary browser access.
+
 ## Suggested closing summary
 
 > This project separates responsibilities deliberately: Terraform provisions Azure infrastructure and bootstraps Argo CD; Argo CD continuously reconciles platform services and workloads from Git. AKS accesses ACR through managed identity, while ExternalDNS uses OIDC-based Workload Identity to update Azure DNS without a client secret. ingress-nginx and cert-manager complete the public HTTPS delivery path.

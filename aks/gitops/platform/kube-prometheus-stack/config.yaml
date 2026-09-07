@@ -1,0 +1,10 @@
+serverSideApply: true
+name: kube-prometheus-stack
+namespace: monitoring
+
+chart:
+  repoURL: https://prometheus-community.github.io/helm-charts
+  name: kube-prometheus-stack
+  version: "90.0.0"
+
+valuesFile: aks/gitops/platform/kube-prometheus-stack/values.yaml

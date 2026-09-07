@@ -33,6 +33,13 @@ applicationsets:
 
     templatePatch: |
       spec:
+      {{ if (dig "serverSideApply" false .) }}
+        syncPolicy:
+          syncOptions:
+            - CreateNamespace=true
+            - ServerSideApply=true
+      {{ end }}
+
         sources:
           # Official component Helm chart
           - repoURL: '{{ .chart.repoURL }}'

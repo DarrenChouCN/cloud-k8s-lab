@@ -1,0 +1,56 @@
+# Node-level metrics
+nodeExporter:
+  enabled: true
+
+# Kubernetes object state: pod status, restarts, replicas, etc.
+kubeStateMetrics:
+  enabled: true
+
+# Container resource usage, including cAdvisor metrics
+kubelet:
+  enabled: true
+  serviceMonitor:
+    cAdvisor: true
+
+# AKS-managed control-plane components
+kubeControllerManager:
+  enabled: false
+
+kubeScheduler:
+  enabled: false
+
+kubeEtcd:
+  enabled: false
+
+# Start with metrics and dashboards; add notifications later
+alertmanager:
+  enabled: false
+
+grafana:
+  enabled: true
+
+prometheus:
+  prometheusSpec:
+    replicas: 1
+    scrapeInterval: 30s
+    evaluationInterval: 30s
+
+    retention: 24h
+    retentionSize: "6GB"
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: managed-csi
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 8Gi

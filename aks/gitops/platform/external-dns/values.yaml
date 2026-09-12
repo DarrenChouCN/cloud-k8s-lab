@@ -21,7 +21,7 @@ serviceAccount:
     azure.workload.identity/use: "true"
   annotations:
     # Come from Terraform output: client-id -> Azure Managed Identity
-    azure.workload.identity/client-id: "49069c09-c950-48a0-9863-151ac07d661c"
+    azure.workload.identity/client-id: "f9b5c74f-f0b4-49ac-baf5-bde388897846"
 
 podLabels:
   azure.workload.identity/use: "true"
